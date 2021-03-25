@@ -130,6 +130,7 @@ example(of: "Single") {
         .disposed(by: disposeBag)
 }
 
+// MARK: - Publish Subject
 example(of: "PublishSubject") {
     let subject = PublishSubject<String>()
     
@@ -165,4 +166,28 @@ example(of: "PublishSubject") {
     subject.onNext("?")
 }
 
+// MARK: - Behavior Subject
+enum MyError: Error {
+    case anError
+}
 
+func print<T: CustomStringConvertible>(label: String, event: Event<T>) {
+    print(label, (event.element ?? event.error) ?? event)
+}
+
+example(of: "BehaviorSubject") {
+    let subject = BehaviorSubject(value: "Initial Value")
+    let disposeBag = DisposeBag()
+    
+    subject.onNext("X")
+    
+    subject.subscribe {
+        print(label: "1)", event: $0)
+    }.disposed(by: disposeBag)
+    
+    subject.onError(MyError.anError)
+    
+    subject.subscribe {
+        print(label: "2)", event: $0)
+    }.disposed(by: disposeBag)
+}
