@@ -1,5 +1,6 @@
 import UIKit
 import RxSwift
+import RxCocoa
 
 //example(of: "just, of, from") {
 //    let one = 1
@@ -217,4 +218,40 @@ example(of: "ReplaySubject") {
     subject.subscribe {
         print(label: "3)", event: $0)
     }.disposed(by: disposeBag)
+}
+
+example(of: "PublishRelay") {
+    let relay = PublishRelay<String>()
+    let disposeBag = DisposeBag()
+    
+    relay.accept("Knock Knock")
+    
+    relay.subscribe(onNext: {
+        print($0)
+    }).disposed(by: disposeBag)
+    
+    relay.accept("1")
+}
+
+example(of: "BehaviorRelay") {
+    let relay = BehaviorRelay(value: "Initial Value")
+    let disposeBag = DisposeBag()
+    
+    relay.accept("New Initial Value")
+    
+    relay.subscribe {
+        print(label: "1)", event: $0)
+    }
+    .disposed(by: disposeBag)
+    
+    relay.accept("1")
+    
+    relay.subscribe {
+        print(label: "2)", event: $0)
+    }
+    .disposed(by: disposeBag)
+    
+    relay.accept("2")
+    
+    print(relay.value)
 }
